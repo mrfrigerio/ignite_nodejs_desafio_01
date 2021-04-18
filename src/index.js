@@ -71,7 +71,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const todo = user.todos.find((t) => t.id === id)
 
   if(!todo) {
-    return response.status(400).json({error: "Todo not found!"})
+    return response.status(404).json({error: "Todo not found!"})
   }
 
   Object.assign(todo, {
@@ -83,11 +83,35 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { id } = request.params
+
+  const { user } = request
+  const todo = user.todos.find((t) => t.id === id)
+
+  if(!todo) {
+    return response.status(404).json({error: "Todo not found!"})
+  }
+
+  Object.assign(todo, {
+    done: true
+  })
+
+  return response.status(200).json(todo)
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { id } = request.params
+
+  const { user } = request
+  const todo = user.todos.find((t) => t.id === id)
+
+  if(!todo) {
+    return response.status(404).json({error: "Todo not found!"})
+  }
+
+  user.todos.splice(todo, 1)
+
+  return response.status(204).json()
 });
 
 module.exports = app;
